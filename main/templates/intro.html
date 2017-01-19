@@ -1,0 +1,49 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+</head>
+
+<body>
+
+    <div style="margin-left:5rem;margin-right:5rem;">
+        <table class="table borderless mytable">
+            <thead class="thead-default heading">
+                <tr>
+                    <th>DATE OF THE VACCINE</th>
+                    <th>NAME OF THE VACCINE</th>
+                    <th>DESCRIPTION</th>
+                    <th>ADMINISTERED?</th>
+            </thead>
+            <tbody>
+                {% for d in data %}
+                <tr class={{ d.Type_of_dose}}>
+                    {% ifchanged d.duration_from %}
+                    <td colspan="4" class='head_date heading'>{%if d.duration_from != 0 %}{{ d.duration_from }} {{ d.duration_in }} {% if d.duration_from != d.duration_to %}to {{ d.duration_to}} {{ d.duration_in }}{% endif%}{%else%}At Birth{%endif%}</td>
+                </tr>
+                <tr class={{ d.Type_of_dose}}>
+                    <td class="act_date">{{ d.duration_from_date }} {% if d.duration_from_date != d.duration_to_date %}to <br>{{ d.duration_to_date}}{% endif%}</td>
+                    {% else %}
+                    <td class="act_date"></td>
+                    {% endifchanged %}
+                    <td>{{ d.name }}<br>{{ d.dose_no}} of {{ d.total_dose}}</td>
+                    <td>{{ d.description}}</td>
+                    <td>{% if d.admin == True %}
+                      {{ d.date_admin }}
+                      {%else%}
+                        <div id='datepick{{d.id}}' style="display: none;"><form action = '{% url 'trial' id=d.id %}' method='POST'>{% csrf_token %}<input type="date" name = "date_admin" max="2016-12-31"><br><input type = 'Submit' value = 'Submit'></form></div>
+                        <a href='#' onClick='task({{ d.id }})'><button id="check{{d.id}}">Record Date</button></a>
+                      {%endif%}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="../static/js/jquery-3.1.1.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/main.js"></script>
+</body>
+
+</html>
